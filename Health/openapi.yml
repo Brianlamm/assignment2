@@ -1,0 +1,83 @@
+openapi: 3.0.0
+servers: []
+info:
+  description: This API provides event stats
+  version: "1.0.0"
+  title: Stats API
+  contact:
+    email: hoanglamdieu@gmail.com
+
+paths: 
+  /health: 
+    get: 
+      summary: Gets the health 
+      operationId: app.get_health 
+      description: Gets health of other services
+      responses: 
+        '200': 
+          description: Successfully returned a list of health checks
+          content: 
+            application/json: 
+              schema: 
+                type: object 
+                properties: 
+                  message: 
+                    type: string
+        '400': 
+          description: Invalid request 
+          content: 
+            application/json: 
+              schema: 
+                type: object 
+                properties: 
+                  message: 
+                    type: string
+# paths:
+#   /health: 
+#     get: 
+#       summary: Gets the event stats 
+#       operationId: app.get_health 
+#       description: Gets services status 
+#       responses: 
+#         '200': 
+#           description: Successfully returned a list of ticket events 
+#           content: 
+#             application/json: 
+#               schema: 
+#                 type: object 
+#                   message: 
+#                     type: string 
+#                 # items: 
+#                 #   $ref: '#/components/schemas/ReadingStats' 
+#         '400': 
+#           description: Invalid request 
+#           content: 
+#             application/json: 
+#               schema: 
+#                 type: object 
+#                 properties: 
+#                   message: 
+#                     type: string 
+
+# components:
+#   schemas:
+#     ReadingStats: 
+#       required: 
+#       - receiver 
+#       - storage 
+#       - processing 
+#       - audit
+#       properties: 
+#         receiver: 
+#           type: string 
+#           example: 'running'
+#         storage: 
+#           type: string 
+#           example: 'running' 
+#         processing: 
+#           type: string 
+#           example: 'running' 
+#         audit: 
+#           type: string 
+#           example: 'running' 
+#       type: object

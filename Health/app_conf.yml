@@ -1,0 +1,10 @@
+version: 1 
+datastore: 
+  filename: /data/status.sqlite 
+scheduler: 
+  period_sec: 5 
+eventstore: 
+  receiver: http://acit3855-lab6.westus3.cloudapp.azure.com/receiver
+  storage: http://acit3855-lab6.westus3.cloudapp.azure.com/storage
+  processing: http://acit3855-lab6.westus3.cloudapp.azure.com/processing
+  audit: http://acit3855-lab6.westus3.cloudapp.azure.com/audit_log

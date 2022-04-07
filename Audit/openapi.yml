@@ -1,0 +1,153 @@
+openapi: 3.0.0 
+info: 
+  description: This API provides audit info 
+  version: "1.0.0" 
+  title: Audit API 
+  contact: 
+    email: hoanglamdieu@gmail.com
+ 
+paths: 
+  /health:
+    get: 
+      tags: 
+        - report 
+      summary: gets health status 
+      operationId: app.get_health 
+      description: Gets health status 
+      responses: 
+        '200': 
+          description: ok
+          
+  /report/ticket:
+    get: 
+      tags: 
+        - report 
+      summary: gets new ticket report 
+      operationId: app.get_report_ticket_info 
+      description: Gets ticket report added after a timestamp 
+      parameters: 
+        - name: index 
+          in: query 
+          description: Gets the BP at the index in the event store 
+          schema: 
+            type: integer 
+            example: 100 
+      responses: 
+        '200': 
+          description: Successfully returned a blood pressure event 
+          content: 
+            application/json: 
+              schema: 
+                type: object 
+                items: 
+                  $ref: '#/components/schemas/Ticket' 
+        '400': 
+          description: Invalid request 
+          content: 
+            application/json: 
+              schema: 
+                type: object 
+                properties: 
+                  message: 
+                    type: string 
+        '404': 
+          description: Not Found 
+          content: 
+            application/json: 
+              schema: 
+                type: object 
+                properties: 
+                  message: 
+                    type: string 
+ 
+  /report/sale:
+    get: 
+      tags: 
+        - report 
+      summary: gets new sale report 
+      operationId: app.get_report_sale_info 
+      description: Gets sale report added after a timestamp 
+      parameters: 
+        - name: index 
+          in: query 
+          description: Gets the HR at the index in the event store 
+          schema: 
+            type: integer 
+            example: 100 
+      responses: 
+        '200': 
+          description: Successfully returned a heart rate event 
+          content: 
+            application/json: 
+              schema: 
+                type: object 
+                items: 
+                  $ref: '#/components/schemas/Sale' 
+        '400': 
+          description: Invalid request 
+          content: 
+            application/json: 
+              schema: 
+                type: object 
+                properties: 
+                  message: 
+                    type: string 
+        '404': 
+          description: Not Found 
+ 
+components:
+  schemas:
+    Ticket:
+      required:
+        - ticket_id
+        - date
+        - team1
+        - team2
+        - seat_number
+        - trace_id
+      properties:
+        ticket_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        date:
+          type: string
+          format: date-time
+          example: '2021-08-29T09:12:33.001Z'
+        team1:
+          type: string
+          example: "Los Angeles Lakers"
+        team2:
+          type: string
+          example: "Los Angeles Clipper"
+        seat_number:
+          type: integer
+          example: 3
+        trace_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      type: object
+
+    Sale:
+      required:
+        - sale_id
+        - price
+        - quantity
+        - trace_id
+      properties:
+        sale_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        price:
+          type: integer
+          example: 30
+        quantity:
+          type: integer
+          example: 1
+        trace_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      type: object

@@ -1,0 +1,26 @@
+2022-03-02 13:31:07,367 - basicLogger - INFO - Retrieving BP at index 10
+2022-03-02 13:31:08,760 - basicLogger - ERROR - Could not find Ticket at index 10
+2022-03-02 13:31:24,434 - basicLogger - INFO - Retrieving BP at index 100
+2022-03-02 13:31:25,840 - basicLogger - ERROR - Could not find Ticket at index 100
+2022-03-02 13:31:32,506 - basicLogger - INFO - Retrieving BP at index 50
+2022-03-02 13:31:33,897 - basicLogger - ERROR - Could not find Ticket at index 50
+2022-03-02 13:31:50,011 - basicLogger - INFO - Retrieving BP at index 0
+2022-03-02 13:31:51,407 - basicLogger - ERROR - Could not find Ticket at index 0
+2022-03-02 13:33:07,127 - basicLogger - INFO - Retrieving BP at index 10
+2022-03-02 13:33:09,075 - basicLogger - ERROR - Could not find Ticket at index 10
+2022-03-02 13:33:16,761 - basicLogger - INFO - Retrieving BP at index 50
+2022-03-02 13:33:18,204 - basicLogger - ERROR - Could not find Ticket at index 50
+2022-03-02 13:33:26,738 - basicLogger - INFO - Retrieving BP at index 10
+2022-03-02 13:33:35,430 - basicLogger - INFO - Retrieving BP at index 100
+2022-03-02 13:33:36,831 - basicLogger - ERROR - Could not find Ticket at index 100
+2022-03-02 13:33:42,132 - basicLogger - INFO - Retrieving BP at index 0
+2022-03-02 13:34:49,236 - basicLogger - INFO - Retrieving BP at index 55
+2022-03-02 13:34:50,667 - basicLogger - ERROR - Could not find Ticket at index 55
+2022-03-02 13:34:52,159 - basicLogger - INFO - Retrieving BP at index 1
+2022-03-02 13:34:53,571 - basicLogger - ERROR - Could not find Ticket at index 1
+2022-03-02 13:34:58,624 - basicLogger - INFO - Retrieving BP at index 9
+2022-03-02 13:35:00,037 - basicLogger - ERROR - Could not find Ticket at index 9
+2022-03-02 13:35:09,908 - basicLogger - INFO - Retrieving BP at index 101
+2022-03-02 13:35:17,267 - basicLogger - INFO - Retrieving BP at index 110
+2022-03-02 13:35:21,711 - basicLogger - INFO - Retrieving BP at index 99
+2022-03-02 13:35:23,111 - basicLogger - ERROR - Could not find Ticket at index 99

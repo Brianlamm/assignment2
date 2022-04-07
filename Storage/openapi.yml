@@ -1,0 +1,163 @@
+openapi: 3.0.0
+servers: []
+info:
+  description: This is an application for system that allow them to know which game has the most sales and can make the most money from it
+  version: "1.0.0"
+  title: Ticket API
+  contact:
+    email: hoanglamdieu@gmail.com
+tags:
+  - name: admins
+    description: Secured Admin-only calls
+  - name: developers
+    description: Operations available to regular developers
+paths:
+  /health:
+    get: 
+      tags: 
+        - report 
+      summary: gets health status 
+      operationId: app.get_health 
+      description: Gets health status 
+      responses: 
+        '200': 
+          description: ok
+          
+  /report/ticket:
+    get: 
+      tags: 
+        - report 
+      summary: gets new ticket report 
+      operationId: app.get_report_ticket_info 
+      description: Gets ticket report added after a timestamp 
+      parameters: 
+        - name: start_timestamp 
+          in: query 
+          description: Limits the number of items on a page 
+          schema: 
+            type: string 
+            format: date-time 
+            example: 2021-08-09T09:12:33.001Z 
+        - name: end_timestamp 
+          in: query 
+          description: Limits the number of items on a page 
+          schema: 
+            type: string 
+            format: date-time 
+            example: 2021-08-09T09:12:33.001Z
+      responses: 
+        '200': 
+          description: Successfully returned a list of ticket events 
+          content: 
+            application/json: 
+              schema: 
+                type: array 
+                items: 
+                  $ref: '#/components/schemas/Ticket' 
+        '400': 
+          description: Invalid request 
+          content: 
+            application/json: 
+              schema: 
+                type: object 
+                properties: 
+                  message: 
+                    type: string
+        
+  /report/sale:
+    get: 
+      tags: 
+        - report 
+      summary: gets new sale report 
+      operationId: app.get_report_sale_info 
+      description: Gets sale report added after a timestamp 
+      parameters: 
+        - name: start_timestamp 
+          in: query 
+          description: Limits the number of items on a page 
+          schema: 
+            type: string 
+            format: date-time 
+            example: 2021-08-09T09:12:33.001Z 
+        - name: end_timestamp 
+          in: query 
+          description: Limits the number of items on a page 
+          schema: 
+            type: string 
+            format: date-time 
+            example: 2021-08-09T09:12:33.001Z
+      responses: 
+        '200': 
+          description: Successfully returned a list of sale events 
+          content: 
+            application/json: 
+              schema: 
+                type: array 
+                items: 
+                  $ref: '#/components/schemas/Sale' 
+        '400': 
+          description: Invalid request 
+          content: 
+            application/json: 
+              schema: 
+                type: object 
+                properties: 
+                  message: 
+                    type: string
+                        
+components:
+  schemas:
+    Ticket:
+      required:
+        - ticket_id
+        - date
+        - team1
+        - team2
+        - seat_number
+        - trace_id
+      properties:
+        ticket_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        date:
+          type: string
+          format: date-time
+          example: '2021-08-29T09:12:33.001Z'
+        team1:
+          type: string
+          example: "Los Angeles Lakers"
+        team2:
+          type: string
+          example: "Los Angeles Clipper"
+        seat_number:
+          type: integer
+          example: 3
+        trace_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      type: object
+
+    Sale:
+      required:
+        - sale_id
+        - price
+        - quantity
+        - trace_id
+      properties:
+        sale_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        price:
+          type: integer
+          example: 30
+        quantity:
+          type: integer
+          example: 1
+        trace_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      type: object

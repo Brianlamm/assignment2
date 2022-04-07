@@ -1,0 +1,109 @@
+openapi: 3.0.0
+servers: []
+info:
+  description: This is an application for system that allow them to know which game has the most sales and can make the most money from it
+  version: "1.0.0"
+  title: Ticket API
+  contact:
+    email: hoanglamdieu@gmail.com
+tags:
+  - name: admins
+    description: Secured Admin-only calls
+  - name: developers
+    description: Operations available to regular developers
+paths:
+  /health:
+    get: 
+      tags: 
+        - report 
+      summary: gets health status 
+      operationId: app.get_health 
+      description: Gets health status 
+      responses: 
+        '200': 
+          description: ok 
+          
+  /report/ticket:
+    post:
+      tags:
+        - ticket information
+      summary: report contains the date, ticket number, team that playing and the seat number
+      operationId: app.report_ticket_info
+      description: Add information related to the ticket to the system
+      responses:
+        '201':
+          description: item created
+        '400':
+          description: 'invalid input, object invalid'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ticket'
+        description: Report item to add
+        
+  /report/sale:
+    post:
+      tags:
+        - sale information
+      summary: report contains the price of the ticket and number of tickets left
+      operationId: app.report_sale_info
+      description: Add information related to the sale to the system
+      responses:
+        '201':
+          description: item created
+        '400':
+          description: 'invalid input, object invalid'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Sale'
+        description: Report item to add
+        
+components:
+  schemas:
+    Ticket:
+      required:
+        - ticket_id
+        - date
+        - team1
+        - team2
+        - seat_number
+      properties:
+        ticket_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        date:
+          type: string
+          format: date-time
+          example: '2021-08-29T09:12:33.001Z'
+        team1:
+          type: string
+          example: "Los Angeles Lakers"
+        team2:
+          type: string
+          example: "Los Angeles Clipper"
+        seat_number:
+          type: integer
+          example: 3
+      type: object
+
+    Sale:
+      required:
+        - sale_id
+        - price
+        - quantity
+      properties:
+        sale_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        price:
+          type: integer
+          example: 30
+        quantity:
+          type: integer
+          example: 1
+      type: object

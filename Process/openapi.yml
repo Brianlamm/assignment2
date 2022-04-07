@@ -1,0 +1,74 @@
+openapi: 3.0.0
+servers: []
+info:
+  description: This API provides event stats
+  version: "1.0.0"
+  title: Stats API
+  contact:
+    email: hoanglamdieu@gmail.com
+openapi: 3.0.0 
+
+tags:
+  - name: admins
+    description: Secured Admin-only calls
+  - name: developers
+    description: Operations available to regular developers
+
+paths:
+  /health:
+    get: 
+      tags: 
+        - report 
+      summary: gets health status 
+      operationId: app.get_health 
+      description: Gets health status 
+      responses: 
+        '200': 
+          description: ok
+          
+  /stats: 
+    get: 
+      summary: Gets the event stats 
+      operationId: app.get_stats 
+      description: Gets Ticket and Sale processsed statistics 
+      responses: 
+        '200': 
+          description: Successfully returned a list of ticket events 
+          content: 
+            application/json: 
+              schema: 
+                type: object 
+                items: 
+                  $ref: '#/components/schemas/ReadingStats' 
+        '400': 
+          description: Invalid request 
+          content: 
+            application/json: 
+              schema: 
+                type: object 
+                properties: 
+                  message: 
+                    type: string 
+
+components:
+  schemas:
+    ReadingStats: 
+      required: 
+      - num_ticket_report 
+      - min_sale_report 
+      - num_sale_report 
+      - max_sale_report
+      properties: 
+        num_ticket_report: 
+          type: integer 
+          example: 500000 
+        min_sale_report: 
+          type: integer 
+          example: 200 
+        num_sale_report: 
+          type: integer 
+          example: 500000 
+        max_sale_report: 
+          type: integer 
+          example: 250 
+      type: object
