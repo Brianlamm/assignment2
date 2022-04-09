@@ -122,7 +122,7 @@ def populate_stats():
         report_stat["num_ticket_report"] = prev_stats["num_ticket_report"]
         logging.error(f'Response fail with {response.status_code}')
 
-    response = requests.get(app_config["eventstore"]["url"] + "/report/ticket?start_timestamp=" + last_updated + "&end_timestamp=" + current_timestamp)
+    response = requests.get(app_config["eventstore"]["url"] + "/report/sale?start_timestamp=" + last_updated + "&end_timestamp=" + current_timestamp)
 
     if response and response.status_code == 200 and len(response.json()) != 0:
         logging.info(f'Return {len(response.json())} numbers of events')
@@ -130,8 +130,10 @@ def populate_stats():
         for report in response.json(): 
             sale_result.append(report)
             logging.debug(f'Process sale event with trace id: {report["trace_id"]}')
+        logging.info(sale_result)
         report_stat["num_sale_report"] = prev_stats["num_sale_report"] + len(sale_result)
         prices = [r["price"] for r in sale_result]
+
         if prev_stats["min_sale_report"] < min(prices):
             report_stat["min_sale_report"] = prev_stats["min_sale_report"]
         else:

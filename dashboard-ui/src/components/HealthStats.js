@@ -8,7 +8,7 @@ export default function AppStats() {
 
 	const getStats = () => {
 	
-        fetch(`http://acit3855-lab6.westus3.cloudapp.azure.com/processing/stats`)
+        fetch(`http://acit3855-lab6.westus3.cloudapp.azure.com`)
             .then(res => res.json())
             .then((result)=>{
 				console.log("Received Stats")
@@ -20,7 +20,7 @@ export default function AppStats() {
             })
     }
     useEffect(() => {
-		const interval = setInterval(() => getStats(), 2000); // Update every 2 seconds
+		const interval = setInterval(() => getStats(), 10000); // Update every 10 seconds
 		return() => clearInterval(interval);
     }, [getStats]);
 
@@ -31,27 +31,27 @@ export default function AppStats() {
     } else if (isLoaded === true){
         return(
             <div>
-                <h1>Latest Stats</h1>
+                <h1>Health Stats</h1>
                 <table className={"StatsTable"}>
 					<tbody>
 						<tr>
-							<th>Ticket</th>
-							<th>Sale</th>
+							<th>Health</th>
 						</tr>
 						<tr>
-							<td># Ticket: {stats['num_ticket_report']}</td>
-							<td># Sale: {stats['num_sale_report']}</td>
+							<td colspan="2">Receiver: {stats['receiver']}</td>
 						</tr>
 						<tr>
-							<td colspan="2">Minimum ticket price: {stats['min_sale_report']}</td>
+							<td colspan="2">Storage: {stats['storage']}</td>
 						</tr>
-                        <tr>
-							<td colspan="2">Maximum ticket price: {stats['max_sale_report']}</td>
+						<tr>
+							<td colspan="2">Processing: {stats['processing']}</td>
+						</tr>
+						<tr>
+							<td colspan="2">Audit: {stats['audit']}</td>
 						</tr>
 					</tbody>
                 </table>
-                <h3>Last Updated: {stats['last_updated']}</h3>
-
+                <h3>Last Updated: {stats['last_update']}</h3>
             </div>
         )
     }

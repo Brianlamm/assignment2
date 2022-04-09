@@ -25,28 +25,49 @@ logger = logging.getLogger('basicLogger')
 with open('app_conf.yml', 'r') as f: 
     app_config = yaml.safe_load(f.read())
 
-# if not path.exists(app_config["datastore"]["filename"]):
-#     import sqlite3 
- 
-#     conn = sqlite3.connect(app_config["datastore"]["filename"]) 
-    
-#     c = conn.cursor() 
-#     c.execute(''' 
-#             CREATE TABLE stats 
-#             (id INTEGER PRIMARY KEY ASC,  
-#             num_ticket_report INTEGER NOT NULL, 
-#             num_sale_report INTEGER NOT NULL, 
-#             min_sale_report INTEGER, 
-#             max_sale_report INTEGER, 
-#             last_updated VARCHAR(100) NOT NULL) 
-#             ''') 
-    
-#     conn.commit() 
-#     conn.close()
+site_root = os.path.realpath(os.path.dirname(__file__))
+event_file = os.path.join(site_root, 'health.json')
 
-# DB_ENGINE = create_engine(f'sqlite:///{app_config["datastore"]["filename"]}')
-# Base.metadata.bind = DB_ENGINE
-# DB_SESSION = sessionmaker(bind=DB_ENGINE)
+# json functions
+def to_json(file, payload):
+    """
+    Takes payload data and writes it to a JSON file. JSON file should be initialized with {"subs": []}
+    :param: file: file path
+    :type: str
+    :param: payload: data to be written to the file
+    :type: str
+    """
+
+    # Open file as write and dump JSON payload to file
+    with open(file, mode='w') as json_file:
+        json.dump(payload, json_file)
+
+def clear_json(file):
+    # Object to initialize file with
+    init_data = {"data": []}
+    with open(file, mode='w+') as f:
+        # Seek beginning of file and rewrite the file
+        f.seek(0)
+        f.truncate()
+        f.write(json.dumps(init_data))
+
+def json_init():
+    # Try block to check if file exists, or if file is corrupted
+    try:
+        with open(event_file) as json_file:
+            data = json.load(json_file)
+        print(f'json file successfully returned')
+        return data
+    except json.JSONDecodeError or TypeError:
+        data = clear_json(event_file)
+        print(f'json file cleared')
+        return data
+    except FileNotFoundError:
+        data = {"data": []}
+        with open(event_file, mode='w+') as f:
+            f.write(json.dumps(data))
+        print(f'json file initialized')
+        return data
 
 def get_health():
     '''Returns stats data'''
@@ -81,112 +102,10 @@ def get_health():
         "last_update": now
     }
  
+    to_json(event_file, payload)
+    logger.info(f'payload written to json file')
+    logger.info(f'payload: \n{payload}')
     return payload, 200
-
-# def get_stats(): 
-#     """ Gets new sale reports after the timestamp """ 
- 
-#     session = DB_SESSION() 
-#     reports = session.query(Status).order_by(Status.last_updated.desc()) 
-  
-#     results_list = [] 
- 
-#     for report in reports: 
-#         results_list.append(report.to_dict()) 
- 
-#     session.close() 
-     
-#     logger.info("Return event") 
- 
-#     return results_list[0], 200
-
-# def populate_stats(): 
-#     """ Periodically update stats """ 
-#     logger.info("Start Periodic Processing") 
-#     last_updated = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-#     current_timestamp = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-#     prev_stats = {}
-#     try:
-#         session = DB_SESSION() 
-#         reports = session.query(Status).order_by(Status.last_updated.desc()) 
-    
-#         results_list = [] 
-    
-#         for report in reports: 
-#             results_list.append(report.to_dict()) 
-    
-#         session.close()
-#         prev_stats = results_list[0]
-#         last_updated = prev_stats["last_updated"]
-
-#     except:
-#         prev_stats = {
-#             "num_ticket_report": 0,
-#             "num_sale_report": 0,
-#             "min_sale_report": 100,
-#             "max_sale_report": 0
-#         }
-#         current_timestamp = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-
-#     report_stat = {}
-#     response = requests.get(app_config["eventstore"]["url"] + "/report/ticket?start_timestamp=" + last_updated + "&end_timestamp=" + current_timestamp)
-#     #response = requests.get(f'{app_config["eventstore"]["url"]}/report/ticket', params={"start_timestamp": last_updated})
-#     if response and response.status_code == 200 and len(response.json()) != 0:
-#         logging.info(f'Return {len(response.json())} numbers of events')
-#         ticket_result = []
-#         for report in response.json(): 
-#             ticket_result.append(report)
-#             logging.debug(f'Process ticket event with trace id: {report["trace_id"]}')
-
-#         report_stat["num_ticket_report"] = prev_stats["num_ticket_report"] + len(ticket_result)
-
-#     else:
-#         report_stat["num_ticket_report"] = prev_stats["num_ticket_report"]
-#         logging.error(f'Response fail with {response.status_code}')
-
-#     response = requests.get(f'{app_config["eventstore"]["url"]}/report/sale', params={"timestamp": last_updated})
-
-#     if response and response.status_code == 200 and len(response.json()) != 0:
-#         logging.info(f'Return {len(response.json())} numbers of events')
-#         sale_result = []
-#         for report in response.json(): 
-#             sale_result.append(report)
-#             logging.debug(f'Process sale event with trace id: {report["trace_id"]}')
-#         report_stat["num_sale_report"] = prev_stats["num_sale_report"] + len(sale_result)
-#         prices = [r["price"] for r in sale_result]
-#         if prev_stats["min_sale_report"] < min(prices):
-#             report_stat["min_sale_report"] = prev_stats["min_sale_report"]
-#         else:
-#             report_stat["min_sale_report"] = min(prices)
-        
-#         if prev_stats["max_sale_report"] > max(prices):
-#             report_stat["max_sale_report"] = prev_stats["max_sale_report"]
-#         else:
-#             report_stat["max_sale_report"] = max(prices)
-            
-#     else:
-#         logging.error(f'Response fail with {response.status_code}')
-#         report_stat["num_sale_report"] = prev_stats["num_sale_report"]
-#         report_stat["min_sale_report"] = prev_stats["min_sale_report"]
-#         report_stat["max_sale_report"] = prev_stats["max_sale_report"]
-
-#     report_stat["last_updated"] = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-#     logging.debug(report_stat)
-#     session = DB_SESSION()
-
-#     stat = Status(report_stat['num_ticket_report'],
-#                        report_stat['num_sale_report'],
-#                        report_stat['min_sale_report'],
-#                        report_stat['max_sale_report'],
-#                        report_stat['last_updated'])
-
-#     session.add(stat)
-
-#     session.commit()
-#     session.close()
-
-#     logging.debug(f'Updated stat: {report_stat}')
-#     logging.info(f'End Periodic Processing')
 
 def init_scheduler(): 
     sched = BackgroundScheduler(daemon=True) 
@@ -194,15 +113,6 @@ def init_scheduler():
                   'interval', 
                   seconds=app_config['scheduler']['period_sec']) 
     sched.start()
-
-# app = connexion.FlaskApp(__name__, specification_dir='') 
-# app.add_api("openapi.yml",
-# base_path="/processing",
-# strict_validation=True,  
-# validate_responses=True) 
-# if "TARGET_ENV" not in os.environ or os.environ["TARGET_ENV"] != "test":
-#     CORS(app.app)
-#     app.app.config['CORS_HEADERS'] = 'Content-Type'
 
 app = connexion.FlaskApp(__name__, specification_dir='')
 CORS(app.app)
