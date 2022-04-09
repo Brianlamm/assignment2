@@ -111,6 +111,14 @@ services:
     depends_on: 
       - "processing" 
       - "audit_log"
+  health:
+    image: health
+    ports:
+      - "8120"
+    networks:
+      - "api.network"
+    depends_on:
+      - dashboard
   nginx:
     image: nginx:latest
     # Connects the conf file of the container to the conf file in our folder
